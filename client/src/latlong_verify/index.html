@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latitude-Longitude Verification Screen</title>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-bg: #f8f9fa;
+            --dark-text: #343a40;
+            --border-color: #dee2e6;
+            --spacing-unit: 1rem;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: var(--spacing-unit) auto;
+            padding: var(--spacing-unit);
+            background-color: #fff;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075);
+            border-radius: 0.25rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: calc(var(--spacing-unit) * 1.5);
+            font-size: 1.8rem;
+        }
+
+        /* Search Section */
+        .search-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-unit);
+            padding-bottom: calc(var(--spacing-unit) * 1.5);
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: calc(var(--spacing-unit) * 1.5);
+            align-items: flex-end; /* Aligns items at the bottom */
+        }
+
+        .input-group, .report-type-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 0.5rem; /* Adjust for gap */
+        }
+
+        .input-group label, .report-type-group label {
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        select, input[type="text"] {
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.25rem;
+            font-size: 1rem;
+            box-sizing: border-box;
+            min-width: 150px;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            min-width: 200px;
+        }
+
+        .search-input-wrapper {
+            display: flex;
+            gap: 0.5rem;
+            align-items: stretch;
+            flex-wrap: wrap; /* Allows dropdown and input to wrap */
+            flex-grow: 1; /* Allows it to take available space */
+            min-width: 300px; /* Ensure it has enough space on smaller screens */
+        }
+
+        .report-type-group {
+            flex-basis: auto; /* Allow content to dictate width */
+            margin-right: 1rem; /* Spacing between report type and buttons */
+            min-width: 250px; /* Ensure it has enough space */
+        }
+
+        .report-type-options {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .report-type-options label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 0; /* Override default margin */
+            font-weight: normal; /* Labels inside options should not be bold */
+            color: var(--dark-text);
+        }
+
+        .report-type-options input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: auto; /* Pushes buttons to the bottom of the flex container */
+        }
+
+        button {
+            padding: 0.7rem 1.2rem;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        button.primary {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        button.primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        button.primary:active {
+            background-color: #004085;
+            transform: translateY(0);
+        }
+
+        button.secondary {
+            background-color: var(--secondary-color);
+            color: #fff;
+        }
+
+        button.secondary:hover {
+            background-color: #545b62;
+            transform: translateY(-1px);
+        }
+
+        button.secondary:active {
+            background-color: #383d41;
+            transform: translateY(0);
+        }
+
+        /* Data Section */
+        .data-section {
+            flex-grow: 1;
+            overflow-x: auto; /* Ensures table is scrollable on small screens */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--spacing-unit);
+            font-size: 0.9rem;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid var(--border-color);
+            padding: 0.8rem;
+            text-align: left;
+        }
+
+        .data-table th {
+            background-color: var(--primary-color);
+            color: #fff;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background-color: var(--light-bg);
+        }
+
+        .data-table tbody tr:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 2rem;
+            color: var(--secondary-color);
+            font-style: italic;
+        }
+
+        /* Accessibility */
+        *:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .search-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .input-group, .report-type-group {
+                width: 100%;
+                margin-right: 0;
+            }
+
+            .search-input-wrapper {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            select, input[type="text"] {
+                min-width: unset;
+                width: 100%;
+            }
+
+            .report-type-options {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Latitude-Longitude Verification Screen</h1>
+
+        <div class="search-section">
+            <div class="input-group">
+                <label for="searchType">Search By:</label>
+                <div class="search-input-wrapper">
+                    <select id="searchType" aria-label="Select search type">
+                        <option value="gluserId">Gluser Id</option>
+                        <option value="mobileNumber">Mobile Number</option>
+                    </select>
+                    <input type="text" id="searchValue" placeholder="Enter Gluser Id or Mobile Number" aria-label="Search value input">
+                </div>
+            </div>
+
+            <div class="report-type-group">
+                <label>Report Type:</label>
+                <div class="report-type-options">
+                    <label for="reportTypeDefault">
+                        <input type="radio" id="reportTypeDefault" name="reportType" value="default" checked>
+                        Default
+                    </label>
+                    <label for="reportTypeClusterWise">
+                        <input type="radio" id="reportTypeClusterWise" name="reportType" value="clusterWise">
+                        Cluster Wise
+                    </label>
+                    <label for="reportTypeMERPClusterWise">
+                        <input type="radio" id="reportTypeMERPClusterWise" name="reportType" value="merpClusterWise">
+                        MERP Cluster Wise
+                    </label>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="searchButton" class="primary">Search</button>
+                <button id="refreshButton" class="secondary">Refresh</button>
+            </div>
+        </div>
+
+        <div class="data-section">
+            <div id="dataTableContainer">
+                <p class="no-data">No data to display. Please perform a search.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchTypeSelect = document.getElementById('searchType');
+            const searchValueInput = document.getElementById('searchValue');
+            const searchButton = document.getElementById('searchButton');
+            const refreshButton = document.getElementById('refreshButton');
+            const dataTableContainer = document.getElementById('dataTableContainer');
+
+            // --- Simulation of dynamic data ---
+            const generateFakeData = (searchType, searchValue, reportType) => {
+                const data = [];
+                const numRows = Math.floor(Math.random() * 10) + 5; // 5 to 14 rows
+                const baseId = searchValue ? parseInt(searchValue.replace(/\D/g, '').slice(-4)) : 1000;
+
+                if (!searchValue) {
+                    return []; // No data if no search value
+                }
+
+                for (let i = 0; i < numRows; i++) {
+                    const id = baseId + i;
+                    const lat = (Math.random() * (90 - (-90)) + (-90)).toFixed(6);
+                    const lon = (Math.random() * (180 - (-180)) + (-180)).toFixed(6);
+                    const statusOptions = ['Verified', 'Pending', 'Rejected'];
+                    const status = statusOptions[Math.floor(Math.random() * statusOptions.length)];
+                    const lastUpdated = new Date(Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000).toLocaleDateString();
+
+                    data.push({
+                        'ID': id,
+                        'Search By': searchType === 'gluserId' ? 'Gluser Id' : 'Mobile No',
+                        'Search Value': searchValue,
+                        'Report Type': reportType,
+                        'Latitude': lat,
+                        'Longitude': lon,
+                        'Status': status,
+                        'Last Updated': lastUpdated
+                    });
+                }
+                return data;
+            };
+
+            const renderTable = (data) => {
+                dataTableContainer.innerHTML = ''; // Clear previous content
+
+                if (data.length === 0) {
+                    dataTableContainer.innerHTML = '<p class="no-data">No data to display. Please refine your search.</p>';
+                    return;
+                }
+
+                const table = document.createElement('table');
+                table.className = 'data-table';
+
+                // Create table header
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                Object.keys(data[0]).forEach(key => {
+                    const th = document.createElement('th');
+                    th.textContent = key;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+
+                // Create table body
+                const tbody = document.createElement('tbody');
+                data.forEach(rowData => {
+                    const tr = document.createElement('tr');
+                    Object.values(rowData).forEach(value => {
+                        const td = document.createElement('td');
+                        td.textContent = value;
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+
+                dataTableContainer.appendChild(table);
+            };
+
+            const performSearch = () => {
+                const searchType = searchTypeSelect.value;
+                const searchValue = searchValueInput.value.trim();
+                const reportType = document.querySelector('input[name="reportType"]:checked').value;
+
+                if (!searchValue) {
+                    alert('Please enter a Gluser Id or Mobile Number.');
+                    return;
+                }
+
+                const data = generateFakeData(searchType, searchValue, reportType);
+                renderTable(data);
+            };
+
+            const performRefresh = () => {
+                // For refresh, we simply re-run the last search with current form values
+                performSearch();
+            };
+
+            // Event Listeners
+            searchButton.addEventListener('click', performSearch);
+            refreshButton.addEventListener('click', performRefresh);
+        });
+    </script>
+</body>
+</html>
