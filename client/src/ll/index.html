@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latitude-Longitude Verification Screen (Grid Layout)</title>
+    <style>
+        :root {
+            --primary-color: #3f51b5; /* Indigo */
+            --primary-light: #7986cb;
+            --primary-dark: #303f9f;
+            --accent-color: #ff4081; /* Pink A200 */
+            --text-color: #333;
+            --secondary-text: #666;
+            --background-light: #f5f5f5;
+            --card-background: #ffffff;
+            --border-light: #e0e0e0;
+            --focus-outline: #3f51b5;
+            --spacing-md: 1.25rem;
+            --spacing-sm: 0.75rem;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif; /* Using a common web-safe font or fallback */
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-light);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: var(--spacing-md) auto;
+            padding: var(--spacing-md);
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: calc(var(--spacing-md) * 1.5);
+            font-size: 2rem;
+            font-weight: 500;
+        }
+
+        /* Search Section - Grid Layout */
+        .search-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive columns */
+            gap: var(--spacing-md);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: var(--spacing-md);
+            align-items: end; /* Aligns content to the bottom of their grid cells */
+        }
+
+        .input-group, .report-type-group, .actions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .input-group label, .report-type-group label {
+            font-weight: 500;
+            color: var(--primary-color);
+            font-size: 0.95rem;
+        }
+
+        input[type="text"], select {
+            padding: 0.7rem 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+            outline: none;
+        }
+
+        .search-by-options {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        .search-by-options label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+            font-weight: normal;
+            color: var(--secondary-text);
+        }
+
+        .search-by-options input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+
+        .search-by-options input[type="radio"]:checked + span {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+        .search-by-options input[type="radio"]:checked {
+             accent-color: var(--primary-color); /* For modern browsers */
+        }
+
+        .actions {
+            flex-direction: row;
+            justify-content: flex-end;
+            margin-top: auto; /* Push buttons to bottom if needed */
+        }
+        @media (max-width: 768px) {
+            .actions {
+                justify-content: stretch;
+            }
+        }
+
+
+        button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+            white-space: nowrap; /* Prevent button text from wrapping */
+        }
+
+        button.primary {
+            background-color: var(--primary-color);
+            color: #fff;
+            box-shadow: 0 2px 5px rgba(63, 81, 181, 0.2);
+        }
+
+        button.primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(63, 81, 181, 0.3);
+        }
+
+        button.primary:active {
+            background-color: var(--primary-dark);
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(63, 81, 181, 0.2);
+        }
+
+        button.secondary {
+            background-color: var(--secondary-text);
+            color: #fff;
+        }
+
+        button.secondary:hover {
+            background-color: #555;
+            transform: translateY(-2px);
+        }
+
+        button.secondary:active {
+            background-color: #444;
+            transform: translateY(0);
+        }
+
+        /* Data Section */
+        .data-section {
+            flex-grow: 1;
+            overflow-x: auto;
+            margin-top: var(--spacing-md);
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            min-width: 700px; /* Ensure table is wide enough for columns */
+        }
+
+        .data-table th, .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .data-table th {
+            background-color: var(--primary-light);
+            color: #fff;
+            font-weight: 500;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background-color: var(--background-light);
+        }
+
+        .data-table tbody tr:hover {
+            background-color: rgba(63, 81, 181, 0.05);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 2rem;
+            color: var(--secondary-text);
+            font-style: italic;
+            background-color: var(--card-background);
+            border-radius: 8px;
+        }
+
+        /* Accessibility */
+        *:focus-visible {
+            outline: 2px solid var(--focus-outline);
+            outline-offset: 3px;
+            border-radius: 2px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .container {
+                margin: var(--spacing-sm);
+                padding: var(--spacing-sm);
+            }
+            h1 {
+                font-size: 1.6rem;
+                margin-bottom: var(--spacing-md);
+            }
+            .search-section {
+                grid-template-columns: 1fr; /* Stack all items */
+                gap: var(--spacing-sm);
+            }
+            .actions {
+                flex-direction: column;
+            }
+            button {
+                width: 100%;
+            }
+            .search-by-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Latitude-Longitude Verification Screen</h1>
+
+        <div class="search-section">
+            <div class="input-group">
+                <label>Search By:</label>
+                <div class="search-by-options">
+                    <label for="searchTypeGluser">
+                        <input type="radio" id="searchTypeGluser" name="searchType" value="gluserId" checked>
+                        <span>Gluser Id</span>
+                    </label>
+                    <label for="searchTypeMobile">
+                        <input type="radio" id="searchTypeMobile" name="searchType" value="mobileNumber">
+                        <span>Mobile Number</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="searchValue">Enter ID or Mobile Number:</label>
+                <input type="text" id="searchValue" placeholder="e.g., 1234567890 or 9876543210" aria-label="Search value input">
+            </div>
+
+            <div class="report-type-group">
+                <label for="reportTypeSelect">Report Type:</label>
+                <select id="reportTypeSelect" aria-label="Select report type">
+                    <option value="default">Default</option>
+                    <option value="clusterWise">Cluster Wise</option>
+                    <option value="merpClusterWise">MERP Cluster Wise</option>
+                </select>
+            </div>
+
+            <div class="actions">
+                <button id="searchButton" class="primary">Search</button>
+                <button id="refreshButton" class="secondary">Refresh</button>
+            </div>
+        </div>
+
+        <div class="data-section">
+            <div id="dataTableContainer">
+                <p class="no-data">No data to display. Please enter search criteria and click Search.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchTypeRadios = document.querySelectorAll('input[name="searchType"]');
+            const searchValueInput = document.getElementById('searchValue');
+            const reportTypeSelect = document.getElementById('reportTypeSelect');
+            const searchButton = document.getElementById('searchButton');
+            const refreshButton = document.getElementById('refreshButton');
+            const dataTableContainer = document.getElementById('dataTableContainer');
+
+            // --- Simulation of dynamic data ---
+            const generateFakeData = (searchType, searchValue, reportType) => {
+                const data = [];
+                const numRows = Math.floor(Math.random() * 10) + 5; // 5 to 14 rows
+                const baseId = searchValue ? parseInt(searchValue.replace(/\D/g, '').slice(-4)) : 1000;
+
+                if (!searchValue) {
+                    return []; // No data if no search value
+                }
+
+                for (let i = 0; i < numRows; i++) {
+                    const id = baseId + i;
+                    const lat = (Math.random() * (90 - (-90)) + (-90)).toFixed(6);
+                    const lon = (Math.random() * (180 - (-180)) + (-180)).toFixed(6);
+                    const statusOptions = ['Verified', 'Pending', 'Rejected', 'On Hold'];
+                    const status = statusOptions[Math.floor(Math.random() * statusOptions.length)];
+                    const lastUpdated = new Date(Date.now() - Math.floor(Math.random() * 60) * 24 * 60 * 60 * 1000).toLocaleDateString('en-US');
+
+                    data.push({
+                        'Entry ID': id,
+                        'Search By': searchType === 'gluserId' ? 'Gluser Id' : 'Mobile No',
+                        'Search Value': searchValue,
+                        'Report Type': reportType,
+                        'Latitude': lat,
+                        'Longitude': lon,
+                        'Status': status,
+                        'Last Updated': lastUpdated
+                    });
+                }
+                return data;
+            };
+
+            const renderTable = (data) => {
+                dataTableContainer.innerHTML = ''; // Clear previous content
+
+                if (data.length === 0) {
+                    dataTableContainer.innerHTML = '<p class="no-data">No data to display. Please enter search criteria and click Search.</p>';
+                    return;
+                }
+
+                const table = document.createElement('table');
+                table.className = 'data-table';
+
+                // Create table header
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                Object.keys(data[0]).forEach(key => {
+                    const th = document.createElement('th');
+                    th.textContent = key;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+
+                // Create table body
+                const tbody = document.createElement('tbody');
+                data.forEach(rowData => {
+                    const tr = document.createElement('tr');
+                    Object.values(rowData).forEach(value => {
+                        const td = document.createElement('td');
+                        td.textContent = value;
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+
+                dataTableContainer.appendChild(table);
+            };
+
+            const performSearch = () => {
+                const searchType = document.querySelector('input[name="searchType"]:checked').value;
+                const searchValue = searchValueInput.value.trim();
+                const reportType = reportTypeSelect.value;
+
+                if (!searchValue) {
+                    alert('Please enter a Gluser Id or Mobile Number to search.');
+                    return;
+                }
+
+                const data = generateFakeData(searchType, searchValue, reportType);
+                renderTable(data);
+            };
+
+            const performRefresh = () => {
+                // Re-run the search with current form values
+                performSearch();
+            };
+
+            // Event Listeners
+            searchButton.addEventListener('click', performSearch);
+            refreshButton.addEventListener('click', performRefresh);
+
+            // Set initial placeholder for search value based on default radio
+            searchTypeRadios.forEach(radio => {
+                radio.addEventListener('change', (event) => {
+                    if (event.target.value === 'gluserId') {
+                        searchValueInput.placeholder = 'e.g., 1234567890';
+                    } else {
+                        searchValueInput.placeholder = 'e.g., 9876543210';
+                    }
+                });
+            });
+            // Initial placeholder setup
+            searchValueInput.placeholder = 'e.g., 1234567890'; // Default for Gluser Id
+        });
+    </script>
+</body>
+</html>
