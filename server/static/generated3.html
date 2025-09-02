@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latitude-Longitude Verification Screen</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e8ecef;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+        }
+
+        h1 {
+            color: #1a2a40;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.2em;
+            font-weight: 700;
+        }
+
+        .search-section {
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            gap: 25px;
+            padding: 30px;
+            background-color: #fcfcfc;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap; /* Allow items to wrap within the group */
+            gap: 20px;
+            align-items: flex-end;
+        }
+
+        .input-field {
+            flex: 1;
+            min-width: 250px; /* Minimum width before input fields wrap */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #495057;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background-color: #f8f9fa;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            background-color: #fff;
+        }
+
+        .report-type-group,
+        .search-type-group {
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .report-type-group legend,
+        .search-type-group legend {
+            font-weight: 600;
+            color: #1a2a40;
+            padding: 0 10px;
+            margin-left: -10px; /* Adjust legend position */
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+        }
+
+        .report-type-options,
+        .search-type-options {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .report-type-options label,
+        .search-type-options label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 0;
+            font-weight: normal; /* Override bold */
+            color: #343a40;
+        }
+
+        .report-type-options input[type="radio"],
+        .search-type-options input[type="radio"] {
+            margin-right: 8px;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #adb5bd;
+            border-radius: 50%;
+            transition: border-color 0.2s, background-color 0.2s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .report-type-options input[type="radio"]:checked,
+        .search-type-options input[type="radio"]:checked {
+            border-color: #007bff;
+            background-color: #007bff;
+        }
+
+        .report-type-options input[type="radio"]:checked::after,
+        .search-type-options input[type="radio"]:checked::after {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .actions {
+            display: flex;
+            gap: 20px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        button.search-btn {
+            background-color: #007bff;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+        }
+
+        button.search-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        button.search-btn:active {
+            background-color: #004085;
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+        }
+
+        button.refresh-btn {
+            background-color: #6c757d;
+            color: white;
+            box-shadow: 0 4px 10px rgba(108, 117, 125, 0.2);
+        }
+
+        button.refresh-btn:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        button.refresh-btn:active {
+            background-color: #495057;
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(108, 117, 125, 0.2);
+        }
+
+        .data-section {
+            margin-top: 35px;
+        }
+
+        .data-section h2 {
+            color: #1a2a40;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+
+        .data-table-container {
+            overflow-x: auto;
+            max-height: 550px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .data-table th {
+            background-color: #f1f3f5;
+            font-weight: 600;
+            color: #495057;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            white-space: nowrap;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background-color: #fcfdfe;
+        }
+
+        .data-table tbody tr:hover {
+            background-color: #e6f7ff;
+        }
+        
+        .data-table tbody td {
+            color: #343a40;
+        }
+
+        .no-data-message {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+            padding: 30px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 8px;
+            font-size: 1.1em;
+            margin-top: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .search-section {
+                padding: 20px;
+                gap: 20px;
+            }
+
+            .input-group {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+
+            .input-field {
+                min-width: unset;
+            }
+
+            .report-type-options,
+            .search-type-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .actions {
+                flex-direction: column;
+                gap: 10px;
+                justify-content: center;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 15px;
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .report-type-group legend,
+            .search-type-group legend {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Latitude-Longitude Verification Screen</h1>
+
+        <section class="search-section">
+            <div class="input-group">
+                <fieldset class="search-type-group">
+                    <legend>Search By:</legend>
+                    <div class="search-type-options">
+                        <label for="searchTypeGluserId">
+                            <input type="radio" id="searchTypeGluserId" name="searchType" value="gluserId" checked aria-label="Search by Gluser ID"> Gluser Id
+                        </label>
+                        <label for="searchTypeMobile">
+                            <input type="radio" id="searchTypeMobile" name="searchType" value="mobile" aria-label="Search by Mobile Number"> Mobile Number
+                        </label>
+                    </div>
+                </fieldset>
+                
+                <div class="input-field">
+                    <label for="searchInput">Search Input:</label>
+                    <input type="text" id="searchInput" placeholder="Enter ID or Mobile" aria-label="Enter Gluser ID or Mobile Number to search">
+                </div>
+            </div>
+
+            <fieldset class="report-type-group">
+                <legend>Report Type:</legend>
+                <div class="report-type-options">
+                    <label for="reportTypeDefault">
+                        <input type="radio" id="reportTypeDefault" name="reportType" value="default" checked aria-label="Select Default report type"> Default
+                    </label>
+                    <label for="reportTypeClusterWise">
+                        <input type="radio" id="reportTypeClusterWise" name="reportType" value="clusterWise" aria-label="Select Cluster Wise report type"> Cluster Wise
+                    </label>
+                    <label for="reportTypeMERPClusterWise">
+                        <input type="radio" id="reportTypeMERPClusterWise" name="reportType" value="merpClusterWise" aria-label="Select MERP Cluster Wise report type"> MERP Cluster Wise
+                    </label>
+                </div>
+            </fieldset>
+
+            <div class="actions">
+                <button id="searchButton" class="search-btn" aria-label="Search for data">Search</button>
+                <button id="refreshButton" class="refresh-btn" aria-label="Refresh data">Refresh</button>
+            </div>
+        </section>
+
+        <section class="data-section">
+            <h2>Verification Data</h2>
+            <div id="dataTableContainer" class="data-table-container">
+                <!-- Table will be rendered here -->
+            </div>
+            <p id="noDataMessage" class="no-data-message" style="display: none;">No data available. Please perform a search or refresh.</p>
+        </section>
+    </div>
+
+    <script>
+        const allDummyData = [
+            { "Gluser ID": "G12345", "Mobile": "9876543210", "Latitude": "34.0522", "Longitude": "-118.2437", "Last Update": "2023-10-26 10:00:00", "Status": "Verified" },
+            { "Gluser ID": "G67890", "Mobile": "9988776655", "Latitude": "33.9533", "Longitude": "-118.4037", "Last Update": "2023-10-26 11:30:00", "Status": "Pending" },
+            { "Gluser ID": "G11223", "Mobile": "9123456789", "Latitude": "34.0522", "Longitude": "-118.2437", "Last Update": "2023-10-26 12:45:00", "Status": "Verified" },
+            { "Gluser ID": "G44556", "Mobile": "9765432100", "Latitude": "33.8121", "Longitude": "-117.9190", "Last Update": "2023-10-26 14:00:00", "Status": "Mismatch" },
+            { "Gluser ID": "G77889", "Mobile": "9001122334", "Latitude": "34.0522", "Longitude": "-118.2437", "Last Update": "2023-10-26 15:15:00", "Status": "Verified" },
+            { "Gluser ID": "G00112", "Mobile": "9554433221", "Latitude": "34.0522", "Longitude": "-118.2437", "Last Update": "2023-10-26 16:30:00", "Status": "Verified" },
+            { "Gluser ID": "G33445", "Mobile": "9112233445", "Latitude": "33.7058", "Longitude": "-118.0163", "Last Update": "2023-10-26 17:00:00", "Status": "Pending" }
+        ];
+
+        function renderTable(data) {
+            const tableContainer = document.getElementById('dataTableContainer');
+            const noDataMessage = document.getElementById('noDataMessage');
+            tableContainer.innerHTML = ''; // Clear previous table
+
+            if (!data || data.length === 0) {
+                noDataMessage.style.display = 'block';
+                return;
+            }
+
+            noDataMessage.style.display = 'none';
+
+            const table = document.createElement('table');
+            table.classList.add('data-table');
+
+            // Create table header
+            const thead = table.createTHead();
+            const headerRow = thead.insertRow();
+            // Use keys from the first object to generate headers
+            for (const key of Object.keys(data[0])) {
+                const th = document.createElement('th');
+                th.textContent = key;
+                headerRow.appendChild(th);
+            }
+
+            // Create table body
+            const tbody = table.createTBody();
+            data.forEach(rowData => {
+                const row = tbody.insertRow();
+                for (const key of Object.keys(data[0])) { // Ensure order of cells matches header
+                    const cell = row.insertCell();
+                    cell.textContent = rowData[key];
+                }
+            });
+
+            tableContainer.appendChild(table);
+        }
+
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchType = document.querySelector('input[name="searchType"]:checked').value; // Get value from radio buttons
+            const selectedReportType = document.querySelector('input[name="reportType"]:checked').value;
+
+            const searchInputValue = searchInput.value.trim();
+            
+
+            console.log(`Searching for '${searchInputValue}' by ${searchType} with report type: ${selectedReportType}`);
+
+            let filteredData = allDummyData;
+            if (searchInputValue) {
+                filteredData = allDummyData.filter(item => {
+                    if (searchType === 'gluserId') {
+                        return item["Gluser ID"].toLowerCase().includes(searchInputValue.toLowerCase());
+                    } else if (searchType === 'mobile') {
+                        return item["Mobile"].includes(searchInputValue); 
+                    }
+                    return false;
+                });
+            }
+            
+            renderTable(filteredData);
+        }
+
+        function handleRefresh() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchTypeGluserId').checked = true; // Reset search type radio to Gluser Id
+            document.getElementById('reportTypeDefault').checked = true; // Reset report type radio
+            renderTable(allDummyData); // Display all data again
+            console.log("Data refreshed.");
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set initial state
+            document.getElementById('searchTypeGluserId').checked = true;
+            document.getElementById('reportTypeDefault').checked = true;
+            renderTable(allDummyData); // Render table with all data initially
+
+            // Event listeners
+            document.getElementById('searchButton').addEventListener('click', performSearch);
+            document.getElementById('refreshButton').addEventListener('click', handleRefresh);
+            
+            // Allow pressing Enter in search input to trigger search
+            document.getElementById('searchInput').addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    performSearch();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

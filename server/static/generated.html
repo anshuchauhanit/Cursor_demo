@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latitude-Longitude Verification Screen</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 25px auto;
+            padding: 25px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 35px;
+            font-size: 2em;
+            font-weight: 600;
+        }
+
+        .search-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 25px;
+            margin-bottom: 25px;
+            background-color: #f9fbfd;
+            border-radius: 10px;
+            border: 1px solid #e0e6ed;
+        }
+
+        .input-group,
+        .report-type-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dcdfe6;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background-color: #fff;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #409eff;
+            box-shadow: 0 0 0 3px rgba(64, 158, 255, 0.2);
+        }
+
+        .report-type-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+            flex-wrap: wrap; /* Allow report type options to wrap */
+        }
+
+        .report-type-options label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px 15px;
+            border: 1px solid #dcdfe6;
+            border-radius: 6px;
+            transition: background-color 0.2s, border-color 0.2s;
+            background-color: #eef2f5;
+            margin-bottom: 0; /* Override default label margin */
+        }
+
+        .report-type-options label:hover {
+            background-color: #e6f0f7;
+            border-color: #a0cfff;
+        }
+
+        .report-type-options input[type="radio"] {
+            margin-right: 8px;
+            appearance: none; /* Hide default radio button */
+            width: 16px;
+            height: 16px;
+            border: 2px solid #a0cfff;
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .report-type-options input[type="radio"]:checked {
+            border-color: #409eff;
+            background-color: #409eff;
+        }
+
+        .report-type-options input[type="radio"]:checked::before {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .report-type-options input[type="radio"] + span { /* for styling text next to radio */
+            font-weight: normal;
+        }
+
+        .report-type-options input[type="radio"]:checked + span {
+            color: #409eff;
+            font-weight: 500;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            grid-column: span 2; /* Occupy full width on larger screens */
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        button.search-btn {
+            background-color: #409eff;
+            color: white;
+            box-shadow: 0 4px 8px rgba(64, 158, 255, 0.2);
+        }
+
+        button.search-btn:hover {
+            background-color: #66b1ff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(64, 158, 255, 0.3);
+        }
+
+        button.search-btn:active {
+            background-color: #3a8ee6;
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(64, 158, 255, 0.2);
+        }
+
+        button.refresh-btn {
+            background-color: #909399;
+            color: white;
+            box-shadow: 0 4px 8px rgba(144, 147, 153, 0.2);
+        }
+
+        button.refresh-btn:hover {
+            background-color: #a6a9ad;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(144, 147, 153, 0.3);
+        }
+
+        button.refresh-btn:active {
+            background-color: #82848a;
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(144, 147, 153, 0.2);
+        }
+
+        .data-section {
+            margin-top: 30px;
+        }
+
+        .data-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.7em;
+            font-weight: 600;
+        }
+
+        .data-table-container {
+            overflow-x: auto;
+            max-height: 550px; /* Limit height for scrollable table */
+            border-radius: 8px;
+            border: 1px solid #e0e6ed;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px; /* Ensure table doesn't get too narrow on small screens */
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 14px 18px;
+            text-align: left;
+            border-bottom: 1px solid #e0e6ed;
+        }
+
+        .data-table th {
+            background-color: #f5f7fa;
+            font-weight: 600;
+            color: #555;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            white-space: nowrap;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background-color: #fcfdfe;
+        }
+
+        .data-table tbody tr:hover {
+            background-color: #eaf5ff;
+        }
+        
+        .data-table tbody td {
+            color: #4a4a4a;
+        }
+
+        .no-data-message {
+            text-align: center;
+            color: #777;
+            font-style: italic;
+            padding: 25px;
+            background-color: #fff9e6;
+            border: 1px solid #ffe0b2;
+            border-radius: 8px;
+            font-size: 1.1em;
+            margin-top: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .search-section {
+                grid-template-columns: 1fr; /* Stack elements vertically */
+            }
+            .actions {
+                grid-column: unset; /* Don't span columns */
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                margin: 15px;
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .search-section {
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .report-type-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Latitude-Longitude Verification Screen</h1>
+
+        <section class="search-section">
+            <div class="input-group">
+                <label for="searchTypeSelect">Search By:</label>
+                <select id="searchTypeSelect" aria-label="Select search type">
+                    <option value="gluserId">Gluser Id</option>
+                    <option value="mobile">Mobile Number</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="searchInput">Search Input:</label>
+                <input type="text" id="searchInput" placeholder="Enter Gluser ID or Mobile Number" aria-label="Search input for Gluser ID or Mobile Number">
+            </div>
+
+            <div class="report-type-group">
+                <label>Report Type:</label>
+                <div class="report-type-options">
+                    <label for="reportTypeDefault">
+                        <input type="radio" id="reportTypeDefault" name="reportType" value="default" checked aria-label="Select Default report type"> <span>Default</span>
+                    </label>
+                    <label for="reportTypeClusterWise">
+                        <input type="radio" id="reportTypeClusterWise" name="reportType" value="clusterWise" aria-label="Select Cluster Wise report type"> <span>Cluster Wise</span>
+                    </label>
+                    <label for="reportTypeMERPClusterWise">
+                        <input type="radio" id="reportTypeMERPClusterWise" name="reportType" value="merpClusterWise" aria-label="Select MERP Cluster Wise report type"> <span>MERP Cluster Wise</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="searchButton" class="search-btn" aria-label="Search for data">Search</button>
+                <button id="refreshButton" class="refresh-btn" aria-label="Refresh data">Refresh</button>
+            </div>
+        </section>
+
+        <section class="data-section">
+            <h2>Verification Data</h2>
+            <div id="dataTableContainer" class="data-table-container">
+                <!-- Table will be rendered here -->
+            </div>
+            <p id="noDataMessage" class="no-data-message" style="display: none;">No data available. Please perform a search or refresh.</p>
+        </section>
+    </div>
+
+    <script>
+        const allDummyData = [
+            { "Gluser ID": "G12345", "Mobile": "9876543210", "Latitude": "34.0522", "Longitude": "-118.2437", "Last Update": "2023-10-26 10:00:00", "Status": "Verified" },
+            { "Gluser ID": "G67890", "Mobile": "9988776655", "Latitude": "33.9533", "Longitude": "-118.4037", "Last Update": "2023-10-26 11:30:00", "Status": "Pending" },
+            { "Gluser ID": "G11223", "Mobile": "9123456789", "Latitude": "34.0522", "Longitude": "-118.2437", "Last Update": "2023-10-26 12:45:00", "Status": "Verified" },
+            { "Gluser ID": "G44556", "Mobile": "9765432100", "Latitude": "33.8121", "Longitude": "-117.9190", "Last Update": "2023-10-26 14:00:00", "Status": "Mismatch" },
+            { "Gluser ID": "G77889", "Mobile": "9001122334", "Latitude": "34.0522", "Longitude": "-118.2437", "Last Update": "2023-10-26 15:15:00", "Status": "Verified" },
+            { "Gluser ID": "G00112", "Mobile": "9554433221", "Latitude": "34.0522", "Longitude": "-118.2437", "Last Update": "2023-10-26 16:30:00", "Status": "Verified" },
+            { "Gluser ID": "G33445", "Mobile": "9112233445", "Latitude": "33.7058", "Longitude": "-118.0163", "Last Update": "2023-10-26 17:00:00", "Status": "Pending" }
+        ];
+
+        function renderTable(data) {
+            const tableContainer = document.getElementById('dataTableContainer');
+            const noDataMessage = document.getElementById('noDataMessage');
+            tableContainer.innerHTML = ''; // Clear previous table
+
+            if (!data || data.length === 0) {
+                noDataMessage.style.display = 'block';
+                return;
+            }
+
+            noDataMessage.style.display = 'none';
+
+            const table = document.createElement('table');
+            table.classList.add('data-table');
+
+            // Create table header
+            const thead = table.createTHead();
+            const headerRow = thead.insertRow();
+            // Use keys from the first object to generate headers
+            for (const key of Object.keys(data[0])) {
+                const th = document.createElement('th');
+                th.textContent = key;
+                headerRow.appendChild(th);
+            }
+
+            // Create table body
+            const tbody = table.createTBody();
+            data.forEach(rowData => {
+                const row = tbody.insertRow();
+                for (const key of Object.keys(data[0])) { // Ensure order of cells matches header
+                    const cell = row.insertCell();
+                    cell.textContent = rowData[key];
+                }
+            });
+
+            tableContainer.appendChild(table);
+        }
+
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTypeSelect = document.getElementById('searchTypeSelect');
+            const selectedReportType = document.querySelector('input[name="reportType"]:checked').value;
+
+            const searchInputValue = searchInput.value.trim();
+            const searchType = searchTypeSelect.value;
+
+            console.log(`Searching for '${searchInputValue}' by ${searchType} with report type: ${selectedReportType}`);
+
+            let filteredData = allDummyData;
+            if (searchInputValue) {
+                filteredData = allDummyData.filter(item => {
+                    if (searchType === 'gluserId') {
+                        return item["Gluser ID"].toLowerCase().includes(searchInputValue.toLowerCase());
+                    } else if (searchType === 'mobile') {
+                        return item["Mobile"].includes(searchInputValue); 
+                    }
+                    return false;
+                });
+            }
+            
+            renderTable(filteredData);
+        }
+
+        function handleRefresh() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchTypeSelect').value = 'gluserId'; // Reset search type dropdown
+            document.getElementById('reportTypeDefault').checked = true; // Reset report type radio
+            renderTable(allDummyData); // Display all data again
+            console.log("Data refreshed.");
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set initial state
+            document.getElementById('searchTypeSelect').value = 'gluserId';
+            document.getElementById('reportTypeDefault').checked = true;
+            renderTable(allDummyData); // Render table with all data initially
+
+            // Event listeners
+            document.getElementById('searchButton').addEventListener('click', performSearch);
+            document.getElementById('refreshButton').addEventListener('click', handleRefresh);
+            
+            // Allow pressing Enter in search input to trigger search
+            document.getElementById('searchInput').addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    performSearch();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
