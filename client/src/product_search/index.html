@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        .container { display: flex; flex-direction: column; align-items: center; max-width: 1200px; margin: auto; padding: 20px; }
+        .search-section { display: flex; align-items: center; margin-bottom: 20px; }
+        .search-section select, .search-section input, .search-section button { margin-right: 10px; }
+        .product-card { display: flex; flex-direction: row; border: 1px solid #ccc; padding: 20px; border-radius: 8px; width: 100%; max-width: 800px; }
+        .product-image { flex: 1; }
+        .product-image img { width: 250px; height: 250px; }
+        .product-info { flex: 2; padding-left: 20px; }
+        .product-info h2 { margin: 0; }
+        .product-score { font-size: 1.2em; font-weight: bold; }
+        .green { color: green; }
+        .red { color: red; }
+        .editable { display: flex; align-items: center; margin-bottom: 10px; }
+        .editable input, .editable textarea { flex: 1; margin-right: 10px; }
+        .editable button { padding: 5px 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="search-section">
+            <select id="searchToggle" onchange="updatePlaceholder()">
+                <option value="displayId">Display ID</option>
+                <option value="itemId">Item ID</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="Enter Display ID">
+            <button>Search</button>
+        </div>
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://5.imimg.com/data5/SELLER/Default/2023/11/358906327/CN/BT/JW/375026/longfian-jay-5-single-flow-oxygen-concentrator-5-lpm-250x250.jpg" alt="Product Image">
+            </div>
+            <div class="product-info">
+                <div class="product-score green">Score: 85</div>
+                <div class="editable">
+                    <input type="text" value="TechNova X200 Pro">
+                    <button>Save</button>
+                </div>
+                <div class="editable">
+                    <input type="text" value="₹25,000 / piece">
+                    <button>Save</button>
+                </div>
+                <p>Standardised Price: ₹24,500 / piece</p>
+                <p>If available, please update the product price to the standard unit.</p>
+                <ul>
+                    <li>Model Name: X200 Pro</li>
+                    <li>Brand: TechNova</li>
+                    <li>Capacity: 256GB</li>
+                    <li>Product Type: Smartphone</li>
+                </ul>
+                <div class="editable">
+                    <textarea rows="3">The TechNova X200 Pro is a high-performance smartphone designed for speed and efficiency. Featuring a sleek design, ample storage, and reliable battery life.</textarea>
+                    <button>Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function updatePlaceholder() {
+            const searchInput = document.getElementById('searchInput');
+            const searchToggle = document.getElementById('searchToggle');
+            searchInput.placeholder = searchToggle.value === 'displayId' ? 'Enter Display ID' : 'Enter Item ID';
+        }
+    </script>
+</body>
+</html>
