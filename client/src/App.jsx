@@ -56,7 +56,7 @@ export default function App() {
 
   // Confirm option → send to backend and push to GitHub
   const confirmOption = async (file) => {
-    const screenName = prompt("Enter a screen name:");
+    const screenName = window.prompt("Enter a screen name:");
     if (!screenName) return;
 
     try {
@@ -106,35 +106,37 @@ export default function App() {
           <>
             <h3>Select a UI Option</h3>
             <div className="options-grid">
-              {options.map((file, i) => (
-                <div key={i} className="option-card">
-                  <iframe
-                    src={`http://localhost:5000${file}`}
-                    className="preview-frame"
-                    title={`Option ${i + 1}`}
-                  ></iframe>
-                  <div className="option-actions">
-                    <button
-                      className="btn-success"
-                      onClick={() => selectOption(file, "preview")}
-                    >
-                      Preview UI
-                    </button>
-                    <button
-                      className="btn-secondary"
-                      onClick={() => selectOption(file, "showCode")}
-                    >
-                      Show Code
-                    </button>
-                    <button
-                      className="btn-confirm"
-                      onClick={() => confirmOption(file)}
-                    >
-                      Confirm Option
-                    </button>
-                  </div>
-                </div>
-              ))}
+               {options.map((file, i) => (
+    <div key={i} className="option-card">
+      <iframe
+        src={`http://localhost:5000${file}`}
+        className="preview-frame"
+        title={`Option ${i + 1}`}
+      ></iframe>
+
+      {/* Vertical button strip */}
+      <div className="option-actions-vertical">
+        <button
+          className="btn-success"
+          onClick={() => selectOption(file, "preview")}
+        >
+          Preview UI
+        </button>
+        <button
+          className="btn-secondary"
+          onClick={() => selectOption(file, "showCode")}
+        >
+          Show Code
+        </button>
+        <button
+          className="btn-confirm"
+          onClick={() => confirmOption(file)}
+        >
+          Confirm Option
+        </button>
+      </div>
+    </div>
+  ))}
             </div>
           </>
         )}
